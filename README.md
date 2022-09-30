@@ -75,7 +75,9 @@ TaskHandle_t xHandle = NULL;
 
 
 
-## void vTaskSuspend(TaskHandle_t xTaskToSuspend);
+## vTaskSuspend
+void vTaskSuspend(TaskHandle_t xTaskToSuspend);
+<br>
 <b>Description</b> : 태스크를 중지(Suspend) 시키는 API. 중지된 태스크는 우선순위에 관계없이 CPU 처리 시간을 할당받지 못함.
 <br>
 　　　　　　xTaskSuspend를 같은 Task에 대해 두 번 호출하더라도 중지된 Task를 다시 준비 상태로 돌리기 위해서는 
@@ -103,6 +105,77 @@ void vAFunction (void)
     vTaskSuspend(xHandle);
     vTaskSuspend(NULL);
 }
+</pre>
+
+
+## vTaskDelay
+void vTaskDelay(const TickType_t xTicksToDelay);
+<br>
+<b>Description</b> : 매개변수의 숫자만큼의 틱 동안 태스크를 지연 시킴. 보통 상수 portTICK_PERIOD_MS를 이용하여 1틱 주기의 분해능으로 
+<br>
+　　　　　　실시간 속도를 계산함
+<br>
+<b>Header</b> : task.h
+<br>
+<b>Parameter</b>
+<br>
+　　xTicksToDelay : 지연 시킬 시간
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+ void vTaskFunction( void * pvParameters )
+ {
+ // 500ms 지연
+ const TickType_t xDelay = 500 / portTICK_PERIOD_MS;
+
+     for( ;; )
+     {
+         // 500ms 마다 LED Toggle
+         vToggleLED();
+         vTaskDelay( xDelay );
+     }
+}
+
+</pre>
+
+
+## vTaskPrioritySet
+void vTaskPrioritySet(TaskHandle_t xTask, UBaseType_t uxNewPriority);
+<br>
+<b>Description</b> : 태스크의 우선순위를 지정하는 함수로 현재 실행되는 태스크의 우선순위보다 더 높은 우선순위를 
+<br>
+　　　　　　지정하면 함수가 반환되기 전에 문맥 전환이 발생한다.
+<br>
+<b>Header</b> : task.h
+<br>
+<b>Parameter</b>
+<br>
+　　xTask : 우선순위가 수정될 태스크의 핸들러. NULL 설정 시 현재 태스크의 우선순위 변경
+<br>
+　　uxNewPriority : 태스크가 새롭게 가질 우선순위
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+ void vAFunction( void )
+ {
+ TaskHandle_t xHandle;
+     // 태스크 생성
+     xTaskCreate( vTaskCode, "NAME", STACK_SIZE, NULL, tskIDLE_PRIORITY, &xHandle );
+     
+     // 태스크 우선순위 설정
+     vTaskPrioritySet( xHandle, tskIDLE_PRIORITY + 1 )
+     
+     // NULL 설정 시 현재 태스크 우선 순위 설정
+     vTaskPrioritySet( NULL, tskIDLE_PRIORITY + 1 );
+ }
 </pre>
 
 
