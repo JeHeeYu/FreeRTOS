@@ -179,3 +179,35 @@ void vTaskPrioritySet(TaskHandle_t xTask, UBaseType_t uxNewPriority);
 </pre>
 
 
+## vTaskDelete
+void vTaskDelete(TaskHandle_t xTask);
+<br>
+<b>Description</b> : 현재 동작 중인 태스크를 제거한다. 제거 후 다음 우선순위 태스크가 동작한다.
+<br>
+<b>Header</b> : task.h
+<br>
+<b>Parameter</b>
+<br>
+　　xTask : 제거할 태스크의 핸들러로 NULL 전달 시 함수를 호출한 태스크 자체가 제거됨
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+ void vOtherFunction( void )
+ {
+ TaskHandle_t xHandle = NULL;
+
+     // 새로운 태스크 생성
+     xTaskCreate( vTaskCode, "NAME", STACK_SIZE, NULL, tskIDLE_PRIORITY, &xHandle );
+
+     // 태스크가 동작 중일 경우 제거
+     if( xHandle != NULL )
+     {
+         vTaskDelete( xHandle );
+     }
+ }
+</pre>
+
