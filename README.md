@@ -211,3 +211,40 @@ void vTaskDelete(TaskHandle_t xTask);
  }
 </pre>
 
+
+## vTaskResume
+void vTaskResume(TaskHandle_t xTaskToResume);
+<br>
+<b>Description</b> : 중지(suspend)된 태스크를 재개(resume)시키는 함수로 이전에 vTaskSuspend()에 중지된 함수를 재시작 함
+<br>
+<b>Header</b> : task.h
+<br>
+<b>Parameter</b>
+<br>
+　　xTask : 재시작할 태스크 핸들러
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+ void vAFunction( void )
+ {
+ TaskHandle_t xHandle;
+
+     // 태스크 생성
+     xTaskCreate( vTaskCode, "NAME", STACK_SIZE, NULL, tskIDLE_PRIORITY, &xHandle );
+
+     // 태스크 중지
+     vTaskSuspend( xHandle );
+
+     // 일시 중단된 작업 시작
+     vTaskResume( xHandle );
+
+     // The created task will once again get microcontroller processing
+     // time in accordance with its priority within the system.
+ }
+   
+</pre>
+
