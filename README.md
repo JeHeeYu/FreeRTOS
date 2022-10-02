@@ -259,7 +259,7 @@ void vTaskResume(TaskHandle_t xTaskToResume);
 <br>
 <b>Parameter</b>
 <br>
-　　xTask : 재시작할 태스크 핸들러
+　　xTask : 재시작할 태스크 핸들
 <br>
 <b>Return</b>
 <br>
@@ -299,7 +299,7 @@ void vSemaphoreCreateBinary(SemaphoreHandle_t xSemaphore);
 <br>
 <b>Parameter</b>
 <br>
-　　xSemaphore : 생성된 세마포어의 핸들러
+　　xSemaphore : 생성된 세마포어의 핸들
 <br>
 <b>Return</b>
 <br>
@@ -326,17 +326,56 @@ void vATask( void * pvParameters )
 
 
 
-
-## vSemaphoreDelete
-void vSemaphoreDelete(SemaphoreHandle_t xSemaphore);
+## xSemaphoreCreateBinary
+SemaphoreHandle_t xSemaphoreCreateBinary(void);
 <br>
-<b>Description</b> : 세마포어 삭제. 세마포어 및 뮤텍스 재귀 세마포어도 삭제 가능
+<b>Description</b> : 이진 바이너리 세마포어를 생성하는 함수로 빈 세마포어가 생성됨
 <br>
 <b>Header</b> : semphr.h
 <br>
 <b>Parameter</b>
 <br>
-　　xSemaphore : 삭제할 세마포어의 핸들러
+　　void
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+SemaphoreHandle_t xSemaphore;
+
+void vATask( void * pvParameters )
+{
+    세마포어 생성
+    xSemaphore = xSemaphoreCreateBinary();
+
+    // 세마포어 생성 메모리(Heap)가 부족
+    if( xSemaphore == NULL )
+    {
+        // 세마포어 생성 실패
+    }
+    else
+    {
+        세마포어 생성 완료
+    }
+}
+</pre>
+
+
+
+
+
+## vSemaphoreDelete
+void vSemaphoreDelete(SemaphoreHandle_t xSemaphore);
+<br>
+<b>Description</b> : 세마포어 삭제. 세마포어 및 뮤텍스 재귀 세마포어도 삭제 가능 (삭제로 얻을 이득이 크지 않으므로 가급적 사용하지 않음)
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　xSemaphore : 삭제할 세마포어의 핸들
 <br>
 <b>Return</b>
 <br>
@@ -360,3 +399,214 @@ void vATask( void * pvParameters )
 }
    
 </pre>
+
+
+
+
+
+## xSemaphoreTake
+void xSemaphoreTake(SemaphoreHandle_t xSemaphore, TickType_t xTicksToWait);
+<br>
+<b>Description</b> : 세마포어를 얻기 위한 함수(대기)로 xSemaphoreCreateBinary() 또는 다른 생성 함수로 생성된 핸들러에 적용
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　xSemaphore : 사용 중인 세마포어 핸들
+　　xTicksToWait : 세마포어를 얻을 때까지 기다리는 시간
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+SemaphoreHandle_t xSemaphore = NULL;
+
+// 세마포어 생성 함수
+void vATask( void * pvParameters )
+{
+    // 뮤텍스 세마포어 생성
+    xSemaphore = xSemaphoreCreateMutex();
+}
+
+// 세마포어를 사용하는 함수
+void vAnotherTask( void * pvParameters )
+{
+    ... 
+
+    if( xSemaphore != NULL )
+    {
+        // 세마포어를 얻을 때까지 대기하며 10Tick을 기다리면 무효
+        if( xSemaphoreTake( xSemaphore, ( TickType_t ) 10 ) == pdTRUE )
+        {
+            // 세마포어 사용 가능
+
+            // 세마포어 반환
+            xSemaphoreGive( xSemaphore );
+        }
+        else
+        {
+            // 세마포어 생성 실패
+        }
+    }
+}
+</pre>
+
+
+
+
+
+## xSemaphoreGive
+void xSemaphoreGive(SemaphoreHandle_t xSemaphore);
+<br>
+<b>Description</b> : 세마포어 해제(반환) 하는 함수로 xSemaphoreCreateBinary() 또는 다른 생성 함수로 생성된 핸들러에 적용
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　xSemaphore : 해제할 세마포어 핸들
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+ SemaphoreHandle_t xSemaphore = NULL;
+ void vATask( void * pvParameters )
+ {
+    // 세마포어 생성
+    xSemaphore = xSemaphoreCreateMutex();
+
+    // 세마포어 생성 성공
+    if( xSemaphore != NULL )
+    {
+        // 세마포어 반환할 수 없는 상태
+        if( xSemaphoreGive( xSemaphore ) != pdTRUE )
+        {
+        }
+        
+        // 세마포어 사용 중인 상태 (즉, 반환 가능한 상태)
+        if( xSemaphoreTake( xSemaphore, ( TickType_t ) 0 ) )
+        {
+            // 세마포어 사용 중
+            
+            // 세마포어 해제 시도
+            if( xSemaphoreGive( xSemaphore ) != pdTRUE )
+            {
+                // 세마포어 해제 완료
+            }
+        }
+    }
+ }
+</pre>
+
+
+
+
+
+
+## xSemaphoreTakeFromISR
+BaseType_t xSemaphoreTakeFromISR(SemaphoreHandle_t xSemaphore, signed BaseType_t *pxHigherPriorityTaskWoken);
+<br>
+<b>Description</b> : ISR에서 호출할 수 있는 xSemaphoreTake()의 버전
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　xSemaphore : Take할 세마포어 핸들
+　　pxHigherPriorityTaskWoken : 휴먼상태에서 깨어날 때 결정할 문맥전환
+<br>
+<b>Return</b>
+<br>
+　　pdTRUE : 세마포어 Take 성공
+　　pdFALSE : 세마포어 Take 실패
+<br>
+
+
+
+
+
+
+## xSemaphoreGiveFromISR
+BaseType_t xSemaphoreGiveFromISR(SemaphoreHandle_t xSemaphore, signed BaseType_t *pxHigherPriorityTaskWoken);
+<br>
+<b>Description</b> : ISR에서 호출할 수 있는 xSemaphoreGive()의 버전
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　xSemaphore : Give할 세마포어 핸들
+　　pxHigherPriorityTaskWoken : 휴먼상태에서 깨어날 때 결정할 문맥전환
+<br>
+<b>Return</b>
+<br>
+　　pdTRUE : 세마포어 Give 성공
+　　pdFALSE : 세마포어 Give 실패
+<br>
+
+
+
+
+
+
+## xSemaphoreCreateCounting
+SemaphoreHandle_t xSemaphoreCreateCounting(UBaseType_t uxMaxCount, UBaseType_t uxInitialCount);
+<br>
+<b>Description</b> : 카운팅 세마포어를 생성하고 참조할 수 있는 핸들 반환
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　uxMaxCount : 도달할 수 있는 최대 개수 값으로 세마포어가 이 값에 도달하면 더이상 주어진 수는 없음
+　　uxInitialCount : 세마포어가 생성될 때 할당된 카운트 값
+<br>
+<b>Return</b>
+<br>
+　　SemaphoreHandle_t Handler : 세마포어에 대한 핸들
+　　NULL : 세마포어를 유지하는데 필요한 RAM 부족 또는 만들 수 없을 때
+<br>
+<b>Example</b>
+<pre>
+ void vATask( void * pvParameters )
+{
+SemaphoreHandle_t xSemaphore;
+
+    // 최대 개수가 10개이고 초기 개수가 0인 카운팅 세마포어 생성
+    xSemaphore = xSemaphoreCreateCounting( 10, 0 );
+
+    if( xSemaphore != NULL )
+    {
+        // 카운팅 세마포어 생성 성공
+    }
+}
+</pre>
+
+
+
+
+
+
+## uxSemaphoreGetCount
+UBaseType_t xSemaphoreCreateCounting(SemaphoreHandle_t xSemaphore);
+<br>
+<b>Description</b> : 세마포어의 개수 반환
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　xSemaphore : 세마포어 
+<br>
+<b>Return</b>
+<br>
+　　Count : 세마포어가 카운팅 세마포어면서, 현재 카운트 값 반환
+　　1 : 세마포어가 바이너리 세마포어면서, 사용할 수 있는 경우
+　　0 : 세마포어를 사용할 수 없는 경우
+<br>
