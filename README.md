@@ -286,3 +286,38 @@ void vTaskResume(TaskHandle_t xTaskToResume);
    
 </pre>
 
+
+
+
+
+## vSemaphoreCreateBinary
+void vSemaphoreCreateBinary(SemaphoreHandle_t xSemaphore);
+<br>
+<b>Description</b> : 바이너리 세마포어를 생성하는 함수
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　xSemaphore : 생성된 세마포어의 핸들러
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+SemaphoreHandle_t xSemaphore;
+
+void vATask( void * pvParameters )
+{
+    // 
+    vSemaphoreCreateBinary( xSemaphore );
+
+    if( xSemaphore != NULL )
+    {
+        // 세마포어 생성 완료
+    }
+}
+   
+</pre>
