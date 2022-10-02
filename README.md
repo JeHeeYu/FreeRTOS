@@ -3,9 +3,9 @@ FreeRTOS API Reference 정리 Repository
 
 
 ## xTaskCreate
-BaseType_t xTaskCreate(TaskFunction_t pvTaskCode, const char* const pcName, configSTACK_DEPTH_TYPE usStackDepth, 
+BaseType_t xTaskCreate(TaskFunction_t pvTaskCode, const char* const pcName, 
 <br>
-　　　　　　　　　　　void *pvParameters, UBaseType_t uxPriority, TaskHandle_t *pxCreatedTask);
+　　　　　　　　　　　configSTACK_DEPTH_TYPE usStackDepth, void *pvParameters, UBaseType_t uxPriority, TaskHandle_t *pxCreatedTask);
 <br>
 <b>Description</b> : 태스크를 중지(Suspend) 시키는 API. 중지된 태스크는 우선순위에 관계없이 CPU 처리 시간을 할당받지 못함.
 <br>
