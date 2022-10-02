@@ -293,7 +293,7 @@ void vTaskResume(TaskHandle_t xTaskToResume);
 ## vSemaphoreCreateBinary
 void vSemaphoreCreateBinary(SemaphoreHandle_t xSemaphore);
 <br>
-<b>Description</b> : 바이너리 세마포어를 생성하는 함수
+<b>Description</b> : 바이너리 세마포어를 생성하는 함수 바이너리 세마포어 이므로 0과 1의 값만 전달할 수 있음
 <br>
 <b>Header</b> : semphr.h
 <br>
