@@ -657,3 +657,171 @@ void vATask( void * pvParameters )
    }
 }
 </pre>
+
+
+
+
+
+## xEventGroupCreate
+EventGroupHandle_t xEventGroupCreate(void);
+<br>
+<b>Description</b> : 새로운 RTOS 이벤트 그룹을 만들고 새로 만든 이벤트 그룹을 참조할 수 있는 핸들을 반환한다.
+<br>
+　　　　　　이벤트 그룹은 EventBits_t 유형의 변수에 저장된다.
+<br>
+　　　　　　이벤트 그룹 내에서 구현된 비트 수는 configUSE_16_BIT_TICKS가 1로 설정된 경우는 8, 0으로 설정되면 24이다.
+<br>
+<b>Header</b> : event_groups.h
+<br>
+<b>Parameter</b>
+<br>
+　　void
+<br>
+<b>Return</b>
+<br>
+　　EventGroupHandle_t Handle : 이벤트 그룹이 생성된 경우 이벤트 그룹 핸들 반환
+<br>
+　　NULL : 이벤트 그룹을 생성하는데 필요한 메모리가(Heap) 부족하거나 이벤트 그룹 생성 실패 시 반환
+<br>
+<b>Example</b>
+<pre>
+// 이벤트 그룹을 담을 변수 선언
+EventGroupHandle_t xCreatedEventGroup;
+
+// 이벤트 그룹 생성 시도
+xCreatedEventGroup = xEventGroupCreate();
+
+if( xCreatedEventGroup == NULL )
+{
+    // 사용 가능 FreeRTOS Heal 메모리가 부족하여 이벤트 그룹 생성 실패
+}
+else
+{
+    // 이벤트 그룹 생성 성공
+}
+</pre>
+
+
+
+
+
+## xEventGroupWaitBits
+EventBits_t xEventGroupWaitBits(const EventGroupHandle_t xEventGroup, const EventBits_t uxBitsToWaitFor,
+　　　　　　　　　　　　　　　const BaseType_t xClearOnExit, const BaseType_t xWaitForAllBits, TickType_t xTicksToWait);
+<br>
+<b>Description</b> : RTOS 이벤트 그룹 내의 비트를 읽고 비트 또는 비트 그룹이 설정될 때까지 대기
+<br>
+<b>Header</b> : event_groups.h
+<br>
+<b>Parameter</b>
+<br>
+　　xEventGroup : xEventGroupCreate() 함수로 호출한 이벤트 그룹 핸들
+  <br>
+　　uxBitsToWaitFor : 테스트할 비트. define 값이나 enum 값, case 문 등 사용
+  <br>
+　　xClearOnExit : Clear 여부. pdTRUE or 1로 설정 시 시간 초과 이외 다른 이유로 반환되는 모든 비트 Clear (pdFALSE or 0 시 Clear 안함)
+  <br>
+　　xWaitForAllBits : 이벤트 대기 조건 방법. pdFALSE or 0 시 AND, pdTRUE or 1 시 OR
+  <br>
+　　xTicksToWait : uxBitsToWaitFor 매개변수 조건의 Timeout 시간
+<br>
+<b>Return</b>
+<br>
+　　EventBits_t bit : 대기 중인 이벤트 비트의 설정 값.
+<br>
+　　xEventGroupWaitBits() : 대기 중인 비트가 설정되지 않았을 때
+<br>
+<b>Example</b>
+<pre>
+#define BIT_0	( 1 << 0 )
+#define BIT_4	( 1 << 4 )
+
+void aFunction( EventGroupHandle_t xEventGroup )
+{
+    EventBits_t uxBits;
+    
+    // Timeout 시간 설정
+    const TickType_t xTicksToWait = 100 / portTICK_PERIOD_MS;
+    
+    // 이벤트 그룹 내에서 BIT_0 또는 BIT_4가 설정될 때까지 최대 100ms 기다림 종료 전에 Clear 필요
+    uxBits = xEventGroupWaitBits(
+            xEventGroup,   // 테스트 중인 이벤트 그룹
+            BIT_0 | BIT_4, // 대기할 이벤트 그룹 내의 비트로 BIT_0 또는 BIT_4
+            pdTRUE,        // BIT_0 또는 BIT_4는 반환하기 전에 지워야 함(Clear)
+            pdFALSE,       // 두 비트 모두 기다리지 않음
+            xTicksToWait ); // 두 비트 중 하나가 설정될 때까지 최대 100ms 기다림
+
+    if( ( uxBits & ( BIT_0 | BIT_4 ) ) == ( BIT_0 | BIT_4 ) )
+    {
+        // 두 비트 모두 Set 되었기 때문에 xEventGroupWaitBits() 반환
+    }
+    else if( ( uxBits & BIT_0 ) != 0 )
+    {
+        // BIT_0만 설정되었기 때문에 xEventGroupWaitBits() 반환
+    }
+    else if( ( uxBits & BIT_4 ) != 0 )
+    {
+        // BIT_4만 설정되었기 때문에 xEventGroupWaitBits() 반환
+    }
+    else
+    {
+        // BIT_0 또는 BIT_4가 설정되지 않고 전달되었기 때문에 xEventGroupWaitBits() 반환
+    }
+}
+</pre>
+
+
+
+
+
+## xEventGroupSetBits
+EventBits_t xEventGroupSetBits(EventGroupHandle_t xEventGroup, const EventBits_t uxBitsToSet);
+<br>
+<b>Description</b> : RTOS 이벤트 그룹 내의 비트를 설정함
+<br>
+<b>Header</b> : event_groups.h
+<br>
+<b>Parameter</b>
+<br>
+　　xEventGroup : xEventGroupCreate() 함수로 호출한 이벤트 그룹 핸들
+  <br>
+　　uxBitsToSet : 이벤트 그룹 내에서 설정할 비트
+<br>
+<b>Return</b>
+<br>
+　　EventBits_t bit : 설정한 이벤트 비트
+<br>
+<b>Example</b>
+<pre>
+#define BIT_0	( 1 << 0 )
+#define BIT_4	( 1 << 4 )
+
+void aFunction( EventGroupHandle_t xEventGroup )
+{
+EventBits_t uxBits;
+
+    // xEventGroup에서 BIT_0과 BIT_4를 설정
+    uxBits = xEventGroupSetBits(
+                              xEventGroup,      // 설정할 이벤트 그룹
+                              BIT_0 | BIT_4 );  // 설정할 비트
+
+    if( ( uxBits & ( BIT_0 | BIT_4 ) ) == ( BIT_0 | BIT_4 ) )
+    {
+        // BIT_0과 BIT_4는 모두 Set된 상태로 유지
+    }
+    else if( ( uxBits & BIT_0 ) != 0 )
+    {
+        // BIT_0은 Set된 상태로 유지, BIT_4는 Clear
+        // BIT_4를 기다리고 있던 작업이 차단되면서 자동으로 지워질 수 있음
+    }
+    else if( ( uxBits & BIT_4 ) != 0 )
+    {
+        // BIT_4는 Set, BIR_0은 Clear
+        // Bit_0을 기다리고 있던 작업이 차단되면서 자동으로 지워질 수 있음
+    }
+    else
+    {
+        // 두 비트 모두 Set되지 않았고, 기다리고 있던 작업이 차단되면서 자동으로 지워질 수 있음
+    }
+}
+</pre>
