@@ -1,6 +1,25 @@
 # FreeRTOS
 FreeRTOS API Reference 정리 Repository
 
+## Variable Naming Rules
+FreeRTOS는 변수명을 결정할 때 접두어를 사용한다.
+<ul>
+<li><b>c</b> : char 타입과 동일</li>
+<li><b>s</b> : int16_t 타입으로 short 타입과 동일</li>
+<li><b>i</b> : int32_t 타입으로 int 타입과 동일</li>
+<li><b>x</b> : BaseType_t 타입을 의미하며 구조체, 인스턴스 핸들 등으로 사용되며 대부분 x타입을 사용</li>
+<li><b>u</b> : unsigned 타입과 동일</li>
+<li><b>p</b> : 포인터 변수를 의미</li>
+</ul>
+
+## Function Naming Rules
+FreeRTOS는 함수명을 결정할 때 접두어를 사용한다.
+<ul>
+<li><b>v</b> : void 타입으로 함수 반환 값이 없음</li>
+<li><b>x</b> : BaseType_t 타입을 의미하며 구조체, 인스턴스 핸들 등으로 사용되며 대부분 x타입을 사용</li>
+<li><b>pv</b> : void* 타입을 반환하는 함수
+<li><b>prv</b> : private 함수를 의미. 대표적으로 task가 실행되지 않을 때 실행되는 idle 태스크가 호출하는 callback 함수(hook)이 이 접두어를 사용</li>
+</ul>
 
 ## xTaskCreate
 BaseType_t xTaskCreate(TaskFunction_t pvTaskCode, const char* const pcName, 
