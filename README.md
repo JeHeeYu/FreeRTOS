@@ -321,3 +321,42 @@ void vATask( void * pvParameters )
 }
    
 </pre>
+
+
+
+
+
+
+## vSemaphoreDelete
+void vSemaphoreDelete(SemaphoreHandle_t xSemaphore);
+<br>
+<b>Description</b> : 세마포어 삭제. 세마포어 및 뮤텍스 재귀 세마포어도 삭제 가능
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　xSemaphore : 삭제할 세마포어의 핸들러
+<br>
+<b>Return</b>
+<br>
+　　void
+<br>
+<b>Example</b>
+<pre>
+SemaphoreHandle_t xSemaphore;
+
+void vATask( void * pvParameters )
+{
+    // 
+    vSemaphoreCreateBinary( xSemaphore );
+
+    if( xSemaphore != NULL )
+    {
+        // 세마포어 생성 완료
+    }
+    
+    vSemaphoreDelete(xSemaphore);
+}
+   
+</pre>
