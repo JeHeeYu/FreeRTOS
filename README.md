@@ -21,6 +21,25 @@ FreeRTOS는 함수명을 결정할 때 접두어를 사용한다.
 <li><b>prv</b> : private 함수를 의미. 대표적으로 task가 실행되지 않을 때 실행되는 idle 태스크가 호출하는 callback 함수(hook)이 이 접두어를 사용</li>
 </ul>
 
+## Macro Prefix Naming Rules
+FreeRTOS는 매크로에서 접두어가 사용되며, 대부분 댐누자로 쓰여지며 정의 된 위치를 나타낼 때는 소문자로 시작된다.
+<ul>
+<li><b>port</b> : portable.h, portmacro.h ... (Ex. portMAXDELAY)</li>
+<li><b>task</b> : task.h (Ex. taskENTERCRITICAL())</li>
+<li><b>pd</b> : projdefs.h (Ex. pdTRUE)</li>
+<li><b>config</b> : FreeRTOSConfig.h (Ex. configUSERPREEMPTION)</li>
+<li><b>err</b> : projdefs.h (Ex. errQUEUEFULL)</li>
+</ul>
+
+## Return Value
+다음 값은 함수 반환 값을 나타낸다.
+<ul>
+<li><b>pdTRUE</b> : 1</li>
+<li><b>pdFALSE</b> : 0</li>
+<li><b>pdFASS</b> : 1</li>
+<li><b>pdFAIL</b> : 0</li>
+</ul>
+
 ## xTaskCreate
 BaseType_t xTaskCreate(TaskFunction_t pvTaskCode, const char* const pcName, 
 <br>
