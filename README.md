@@ -414,6 +414,7 @@ void xSemaphoreTake(SemaphoreHandle_t xSemaphore, TickType_t xTicksToWait);
 <b>Parameter</b>
 <br>
 　　xSemaphore : 사용 중인 세마포어 핸들
+<br>
 　　xTicksToWait : 세마포어를 얻을 때까지 기다리는 시간
 <br>
 <b>Return</b>
@@ -519,11 +520,13 @@ BaseType_t xSemaphoreTakeFromISR(SemaphoreHandle_t xSemaphore, signed BaseType_t
 <b>Parameter</b>
 <br>
 　　xSemaphore : Take할 세마포어 핸들
+<br>
 　　pxHigherPriorityTaskWoken : 휴먼상태에서 깨어날 때 결정할 문맥전환
 <br>
 <b>Return</b>
 <br>
 　　pdTRUE : 세마포어 Take 성공
+<br>
 　　pdFALSE : 세마포어 Take 실패
 <br>
 
@@ -542,11 +545,13 @@ BaseType_t xSemaphoreGiveFromISR(SemaphoreHandle_t xSemaphore, signed BaseType_t
 <b>Parameter</b>
 <br>
 　　xSemaphore : Give할 세마포어 핸들
+<br>
 　　pxHigherPriorityTaskWoken : 휴먼상태에서 깨어날 때 결정할 문맥전환
 <br>
 <b>Return</b>
 <br>
 　　pdTRUE : 세마포어 Give 성공
+<br>
 　　pdFALSE : 세마포어 Give 실패
 <br>
 
@@ -565,11 +570,13 @@ SemaphoreHandle_t xSemaphoreCreateCounting(UBaseType_t uxMaxCount, UBaseType_t u
 <b>Parameter</b>
 <br>
 　　uxMaxCount : 도달할 수 있는 최대 개수 값으로 세마포어가 이 값에 도달하면 더이상 주어진 수는 없음
+<br>
 　　uxInitialCount : 세마포어가 생성될 때 할당된 카운트 값
 <br>
 <b>Return</b>
 <br>
 　　SemaphoreHandle_t Handler : 세마포어에 대한 핸들
+<br>
 　　NULL : 세마포어를 유지하는데 필요한 RAM 부족 또는 만들 수 없을 때
 <br>
 <b>Example</b>
@@ -607,6 +614,8 @@ UBaseType_t xSemaphoreCreateCounting(SemaphoreHandle_t xSemaphore);
 <b>Return</b>
 <br>
 　　Count : 세마포어가 카운팅 세마포어면서, 현재 카운트 값 반환
+<br>
 　　1 : 세마포어가 바이너리 세마포어면서, 사용할 수 있는 경우
+<br>
 　　0 : 세마포어를 사용할 수 없는 경우
 <br>
