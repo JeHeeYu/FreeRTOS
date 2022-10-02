@@ -619,3 +619,41 @@ UBaseType_t xSemaphoreCreateCounting(SemaphoreHandle_t xSemaphore);
 <br>
 　　0 : 세마포어를 사용할 수 없는 경우
 <br>
+
+
+
+
+
+
+## xSemaphoreCreateMutex
+SemaphoreHandle_t xSemaphoreCreateMutex(void);
+<br>
+<b>Description</b> : 뮤텍스를 생성 및 뮤텍스를 참조할 수 있는 핸들 반환. 뮤텍스는 ISR
+<br>
+<b>Header</b> : semphr.h
+<br>
+<b>Parameter</b>
+<br>
+　　void
+<br>
+<b>Return</b>
+<br>
+　　SemaphoreHandle_t Handler : 뮤텍스 생성 성공 시 뮤텍스 핸들 반환
+<br>
+　　NULL : 뮤텍스를 생성하는데 필요한 메모리가 부족하거나 뮤텍스 생성 실패 시 반환
+<br>
+<b>Example</b>
+<pre>
+SemaphoreHandle_t xSemaphore;
+
+void vATask( void * pvParameters )
+{
+   // 뮤텍스 생성
+   xSemaphore = xSemaphoreCreateMutex();
+
+   if( xSemaphore != NULL )
+   {
+       // 뮤텍스 생성 성공
+   }
+}
+</pre>
